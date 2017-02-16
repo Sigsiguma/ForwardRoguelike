@@ -29,6 +29,8 @@ namespace ingame.system {
 
             turn_step_.Where(step => step == NextStep.EnemyAct)
                           .Subscribe(_ => {
+                              Debug.Log("敵の行動");
+                              turn_step_.Value = NextStep.Player;
                           } /*敵の行動*/)
                           .AddTo(this);
         }

@@ -40,6 +40,15 @@ namespace ingame.player {
                                 Debug.LogError("Attack");
                                 onNext(ingame.system.NextStep.EnemyAct);
                             });
+
+            var pointer_event = gameObject.AddComponent<ObservablePointerClickTrigger>();
+
+            pointer_event.OnPointerClickAsObservable()
+                         .Where(_ => ingame.system.GameManager.Instance.TurnStep.Value == ingame.system.NextStep.Player)
+                         .Subscribe(_ => {
+                             Debug.Log("None");
+                             onNext(ingame.system.NextStep.EnemyAct);
+                         });
         }
 
         private IObservable<PlayerDir> ActionAsObservable() {
