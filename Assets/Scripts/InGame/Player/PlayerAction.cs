@@ -21,27 +21,25 @@ namespace ingame.player {
             PlayerDir_ = new Subject<PlayerDir>();
         }
 
-        public void Action(System.Action<ingame.system.NextStep> onEnd) {
+        public void Action(System.Action<ingame.system.NextStep> onNext) {
 
             var MoveAsObservable = ActionAsObservable().Where(dir => CheckCanMove(dir));
             var AttackAsObservable = ActionAsObservable().Where(dir => CheckCanAttack(dir));
 
-            MoveAsObservable.FirstOrDefault()
-                            .TakeUntil(AttackAsObservable)
+            MoveAsObservable.Where(_ => ingame.system.GameManager.Instance.TurnStep.Value == ingame.system.NextStep.Player)
                             .Subscribe(dir => {
                                 Move(dir);
                                 Debug.LogError("Move");
-                                onEnd(ingame.system.NextStep.EnemyMove);
-                            }, () => Debug.Log("移動ストリーム削除"));
+                                onNext(ingame.system.NextStep.EnemyMove);
+                            });
 
 
-            AttackAsObservable.FirstOrDefault()
-                            .TakeUntil(MoveAsObservable)
+            AttackAsObservable.Where(_ => ingame.system.GameManager.Instance.TurnStep.Value == ingame.system.NextStep.Player)
                             .Subscribe(dir => {
                                 Attack(dir);
                                 Debug.LogError("Attack");
-                                onEnd(ingame.system.NextStep.EnemyAct);
-                            }, () => Debug.Log("攻撃ストリーム削除"));
+                                onNext(ingame.system.NextStep.EnemyAct);
+                            });
         }
 
         private IObservable<PlayerDir> ActionAsObservable() {
