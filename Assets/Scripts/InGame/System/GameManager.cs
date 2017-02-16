@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using UniRx;
 
-namespace system {
+namespace ingame.system {
     public class GameManager : MonoBehaviour {
+
+        [SerializeField]
+        private ingame.player.PlayerAction player_action_;
 
         private Subject<NextStep> turn_step_;
 
@@ -14,11 +17,14 @@ namespace system {
         private void Start() {
             turn_step_.Where(step => step == NextStep.Player)
                       .Subscribe(_ => {
-                      } /*プレイヤーの移動かアクション*/)
+                          player_action_.Action((next_step) => turn_step_.OnNext(next_step));
+                      })
                       .AddTo(this);
 
             turn_step_.Where(step => step == NextStep.EnemyMove)
                       .Subscribe(_ => {
+                          Debug.Log("敵の移動");
+                          turn_step_.OnNext(NextStep.Player);
                       } /*敵の移動*/)
                       .AddTo(this);
 
@@ -30,11 +36,11 @@ namespace system {
             turn_step_.OnNext(NextStep.Player);
         }
 
-        //敵はプレイヤーの行動によって移動が先か行動が先か決まる
-        public enum NextStep {
-            Player,
-            EnemyMove,
-            EnemyAct
-        };
     }
+    //敵はプレイヤーの行動によって移動が先か行動が先か決まる
+    public enum NextStep {
+        Player,
+        EnemyMove,
+        EnemyAct
+    };
 }
