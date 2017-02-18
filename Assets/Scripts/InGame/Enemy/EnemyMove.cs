@@ -7,7 +7,7 @@ namespace ingame.enemy {
 
         private Transform target_;
         private int obstacle_mask_;
-        private const float ray_length_ = 0.5f;
+        private const float ray_length_ = 0.3f;
         private const float action_speed_ = 0.2f;
 
         private void Awake() {
@@ -96,8 +96,10 @@ namespace ingame.enemy {
         }
 
         private bool CheckCanMove(Vector2 ray_vec) {
-            var obj = Physics2D.Raycast(transform.position, ray_vec, ray_length_, obstacle_mask_);
-            return obj.collider == null;
+            Vector3 ray_start_pos = transform.position + new Vector3(ray_vec.x / 2, ray_vec.y / 2, 0);
+
+            var obj = Physics2D.Raycast(ray_start_pos, ray_vec, ray_length_, obstacle_mask_);
+            return obj.collider == null || obj.collider.gameObject == transform.gameObject;
         }
 
 
