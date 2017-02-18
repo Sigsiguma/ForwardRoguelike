@@ -9,6 +9,7 @@ namespace ingame.player {
 
         private Subject<PlayerDir> PlayerDir_;
 
+        private const float action_speed_ = 0.3f;
         private const float max_flick_time_ = 0.5f;
         private const float flick_left_border_ = -100f;
         private const float flick_right_border_ = 100f;
@@ -19,6 +20,7 @@ namespace ingame.player {
             obstacle_mask_ = LayerMask.GetMask(new string[] { "Wall", "Enemy" });
             enemy_mask_ = LayerMask.GetMask(new string[] { "Enemy" });
             PlayerDir_ = new Subject<PlayerDir>();
+            PlayerMoved = new Subject<Unit>();
         }
 
         public void Action(System.Action<ingame.system.NextStep> onNext) {
@@ -27,6 +29,7 @@ namespace ingame.player {
             var AttackAsObservable = ActionAsObservable().Where(dir => CheckCanAttack(dir));
 
             MoveAsObservable.Where(_ => ingame.system.GameManager.Instance.TurnStep.Value == ingame.system.NextStep.Player)
+                            .ThrottleFirst(System.TimeSpan.FromSeconds(action_speed_))
                             .Subscribe(dir => {
                                 Move(dir);
                                 Debug.LogError("Move");
@@ -35,11 +38,12 @@ namespace ingame.player {
 
 
             AttackAsObservable.Where(_ => ingame.system.GameManager.Instance.TurnStep.Value == ingame.system.NextStep.Player)
-                            .Subscribe(dir => {
-                                Attack(dir);
-                                Debug.LogError("Attack");
-                                onNext(ingame.system.NextStep.EnemyAct);
-                            });
+                              .ThrottleFirst(System.TimeSpan.FromSeconds(action_speed_))
+                              .Subscribe(dir => {
+                                  Attack(dir);
+                                  Debug.LogError("Attack");
+                                  onNext(ingame.system.NextStep.EnemyAct);
+                              });
 
             var pointer_event = gameObject.AddComponent<ObservablePointerClickTrigger>();
 
