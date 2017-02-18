@@ -7,6 +7,9 @@ namespace ingame.player {
 
         private const float move_speed_ = 0.3f;
         private int obstacle_mask_;
+        private Subject<Unit> PlayerMoved;
+
+        public IObservable<Unit> PlayerMovedAsObservable { get { return PlayerMoved.AsObservable(); } }
 
         private bool CheckCanMove(PlayerDir dir) {
             switch (dir) {
@@ -31,13 +34,16 @@ namespace ingame.player {
 
             switch (dir) {
                 case PlayerDir.Left:
-                    transform.DOMove(transform.position + new Vector3(-0.5f, 0.5f, 0f), move_speed_);
+                    transform.DOMove(transform.position + new Vector3(-0.5f, 0.5f, 0f), move_speed_)
+                             .OnComplete(() => PlayerMoved.OnNext(Unit.Default));
                     break;
                 case PlayerDir.Front:
-                    transform.DOMove(transform.position + new Vector3(0f, 0.5f, 0f), move_speed_);
+                    transform.DOMove(transform.position + new Vector3(0f, 0.5f, 0f), move_speed_)
+                             .OnComplete(() => PlayerMoved.OnNext(Unit.Default));
                     break;
                 case PlayerDir.Right:
-                    transform.DOMove(transform.position + new Vector3(0.5f, 0.5f, 0f), move_speed_);
+                    transform.DOMove(transform.position + new Vector3(0.5f, 0.5f, 0f), move_speed_)
+                             .OnComplete(() => PlayerMoved.OnNext(Unit.Default));
                     break;
             }
         }

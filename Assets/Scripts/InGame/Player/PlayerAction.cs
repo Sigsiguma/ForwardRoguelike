@@ -19,6 +19,7 @@ namespace ingame.player {
             obstacle_mask_ = LayerMask.GetMask(new string[] { "Wall", "Enemy" });
             enemy_mask_ = LayerMask.GetMask(new string[] { "Enemy" });
             PlayerDir_ = new Subject<PlayerDir>();
+            PlayerMoved = new Subject<Unit>();
         }
 
         public void Action(System.Action<ingame.system.NextStep> onNext) {
