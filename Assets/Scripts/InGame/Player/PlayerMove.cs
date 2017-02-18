@@ -5,7 +5,6 @@ using DG.Tweening;
 namespace ingame.player {
     public partial class PlayerAction {
 
-        private const float move_speed_ = 0.3f;
         private int obstacle_mask_;
         private Subject<Unit> PlayerMoved;
 
@@ -34,15 +33,15 @@ namespace ingame.player {
 
             switch (dir) {
                 case PlayerDir.Left:
-                    transform.DOMove(transform.position + new Vector3(-0.5f, 0.5f, 0f), move_speed_)
+                    transform.DOMove(transform.position + new Vector3(-0.5f, 0.5f, 0f), action_speed_)
                              .OnComplete(() => PlayerMoved.OnNext(Unit.Default));
                     break;
                 case PlayerDir.Front:
-                    transform.DOMove(transform.position + new Vector3(0f, 0.5f, 0f), move_speed_)
+                    transform.DOMove(transform.position + new Vector3(0f, 0.5f, 0f), action_speed_)
                              .OnComplete(() => PlayerMoved.OnNext(Unit.Default));
                     break;
                 case PlayerDir.Right:
-                    transform.DOMove(transform.position + new Vector3(0.5f, 0.5f, 0f), move_speed_)
+                    transform.DOMove(transform.position + new Vector3(0.5f, 0.5f, 0f), action_speed_)
                              .OnComplete(() => PlayerMoved.OnNext(Unit.Default));
                     break;
             }

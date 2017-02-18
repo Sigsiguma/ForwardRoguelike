@@ -30,20 +30,20 @@ namespace ingame.player {
             switch (dir) {
                 case PlayerDir.Left: {
                         var sequence = DOTween.Sequence();
-                        sequence.Append(transform.DOMove(transform.position + new Vector3(-0.25f, 0.25f, 0f), move_speed_ / 2));
-                        sequence.Append(transform.DOMove(transform.position, move_speed_ / 2));
+                        sequence.Append(transform.DOMove(transform.position + new Vector3(-0.25f, 0.25f, 0f), action_speed_ / 2));
+                        sequence.Append(transform.DOMove(transform.position, action_speed_ / 2));
                         break;
                     }
                 case PlayerDir.Front: {
                         var sequence = DOTween.Sequence();
-                        sequence.Append(transform.DOMove(transform.position + new Vector3(0f, 0.25f, 0f), move_speed_ / 2));
-                        sequence.Append(transform.DOMove(transform.position, move_speed_ / 2));
+                        sequence.Append(transform.DOMove(transform.position + new Vector3(0f, 0.25f, 0f), action_speed_ / 2));
+                        sequence.Append(transform.DOMove(transform.position, action_speed_ / 2));
                         break;
                     }
                 case PlayerDir.Right: {
                         var sequence = DOTween.Sequence();
-                        sequence.Append(transform.DOMove(transform.position + new Vector3(0.25f, 0.25f, 0f), move_speed_ / 2));
-                        sequence.Append(transform.DOMove(transform.position, move_speed_ / 2));
+                        sequence.Append(transform.DOMove(transform.position + new Vector3(0.25f, 0.25f, 0f), action_speed_ / 2));
+                        sequence.Append(transform.DOMove(transform.position, action_speed_ / 2));
                         break;
                     }
             }
