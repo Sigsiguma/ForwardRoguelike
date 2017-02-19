@@ -21,6 +21,7 @@ namespace ingame.player {
             enemy_mask_ = LayerMask.GetMask(new string[] { "Enemy" });
             PlayerDir_ = new Subject<PlayerDir>();
             PlayerMoved = new Subject<Unit>();
+            PlayerAttacked = new Subject<Unit>();
         }
 
         public void Action(System.Action<ingame.system.NextStep> onNext) {
@@ -32,27 +33,28 @@ namespace ingame.player {
                             .ThrottleFirst(System.TimeSpan.FromSeconds(action_speed_))
                             .Subscribe(dir => {
                                 Move(dir);
-                                Debug.LogError("Move");
-                                onNext(ingame.system.NextStep.EnemyMove);
-                            });
+                            }).AddTo(this);
 
 
             AttackAsObservable.Where(_ => ingame.system.GameManager.Instance.TurnStep.Value == ingame.system.NextStep.Player)
                               .ThrottleFirst(System.TimeSpan.FromSeconds(action_speed_))
                               .Subscribe(dir => {
                                   Attack(dir);
-                                  Debug.LogError("Attack");
-                                  onNext(ingame.system.NextStep.EnemyAct);
-                              });
+                              }).AddTo(this);
 
             var pointer_event = gameObject.AddComponent<ObservablePointerClickTrigger>();
 
             pointer_event.OnPointerClickAsObservable()
                          .Where(_ => ingame.system.GameManager.Instance.TurnStep.Value == ingame.system.NextStep.Player)
                          .Subscribe(_ => {
-                             Debug.Log("None");
                              onNext(ingame.system.NextStep.EnemyAct);
-                         });
+                         }).AddTo(this);
+
+            PlayerMovedAsObservable.Subscribe(_ => onNext(ingame.system.NextStep.EnemyMove))
+                                   .AddTo(this);
+
+            PlayerAttackedAsObservable.Subscribe(_ => onNext(ingame.system.NextStep.EnemyAct))
+                                      .AddTo(this);
         }
 
         private IObservable<PlayerDir> ActionAsObservable() {

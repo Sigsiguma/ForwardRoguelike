@@ -9,16 +9,11 @@ namespace ingame.enemy {
         public IObservable<ActionDir> MoveDirAsObservable { get { return Dir_.AsObservable(); } }
 
         private Transform target_;
-        private int obstacle_mask_;
 
         private Subject<ActionDir> Dir_;
 
         private void Awake() {
-            obstacle_mask_ = LayerMask.GetMask(new string[] { "Wall", "Enemy" });
             Dir_ = new Subject<ActionDir>();
-        }
-
-        private void Start() {
             target_ = GameObject.FindWithTag("Player").transform;
         }
 
@@ -104,7 +99,7 @@ namespace ingame.enemy {
         private bool CheckCanMove(Vector2 ray_vec) {
             Vector3 ray_start_pos = transform.position + new Vector3(ray_vec.x / 2, ray_vec.y / 2, 0);
 
-            var obj = Physics2D.Raycast(ray_start_pos, ray_vec, EnemyCommonSettings.ray_length_, obstacle_mask_);
+            var obj = Physics2D.Raycast(ray_start_pos, ray_vec, EnemyCommonSettings.ray_length_, EnemyCommonSettings.obstacle_mask_);
             return obj.collider == null || obj.collider.gameObject == transform.gameObject;
         }
 
