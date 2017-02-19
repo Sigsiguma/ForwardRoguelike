@@ -1,15 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening;
+using UniRx;
 
 namespace ingame.enemy {
     public class EnemyMove : MonoBehaviour {
 
+        public IObservable<ActionDir> MoveDirAsObservable { get { return Dir_.AsObservable(); } }
+
         private Transform target_;
         private int obstacle_mask_;
 
+        private Subject<ActionDir> Dir_;
+
         private void Awake() {
             obstacle_mask_ = LayerMask.GetMask(new string[] { "Wall", "Enemy" });
+            Dir_ = new Subject<ActionDir>();
         }
 
         private void Start() {
@@ -32,6 +38,8 @@ namespace ingame.enemy {
                     transform.DOMove(EnemyCommonSettings.right_down_, EnemyCommonSettings.action_speed_).SetRelative();
                     break;
             }
+
+            Dir_.OnNext(move_dir);
         }
 
         private ActionDir DecideMoveDir() {
