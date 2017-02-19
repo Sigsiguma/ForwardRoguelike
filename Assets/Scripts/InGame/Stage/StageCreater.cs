@@ -25,9 +25,10 @@ namespace ingame.stage {
             tiled_list_ = new List<GameObject>();
         }
 
-        private void Start() {
+        public void StageCreate(float max_y) {
             StageInit();
             player_.PlayerMovedAsObservable
+                   .Where(_ => player_.transform.position.y < max_y)
                    .Subscribe(_ => StageUpdate());
         }
 
