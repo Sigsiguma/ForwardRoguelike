@@ -24,8 +24,9 @@ namespace ingame.player {
         private void Start() {
 
             player_action_.PlayerDirAsObservable
-                        .Subscribe(PlayerAnimationUpdate)
-                        .AddTo(this);
+                          .DistinctUntilChanged()
+                          .Subscribe(PlayerAnimationUpdate)
+                          .AddTo(this);
         }
 
         private void PlayerAnimationUpdate(PlayerDir dir) {

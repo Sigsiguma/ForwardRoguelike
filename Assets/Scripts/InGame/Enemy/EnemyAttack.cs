@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
 using DG.Tweening;
+using UniRx;
 
 namespace ingame.enemy {
     public class EnemyAttack : MonoBehaviour {
 
+        public IObservable<ActionDir> AttackDirAsObservable { get { return Dir_.AsObservable(); } }
+
         private int player_mask_;
+        private Subject<ActionDir> Dir_;
 
         private void Awake() {
             player_mask_ = LayerMask.GetMask(new string[] { "Player" });
+            Dir_ = new Subject<ActionDir>();
         }
 
         public void Attack() {
@@ -38,6 +43,8 @@ namespace ingame.enemy {
                         break;
                     }
             }
+
+            Dir_.OnNext(attack_dir);
         }
 
         private ActionDir DecideAttackDir() {
