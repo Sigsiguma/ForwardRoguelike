@@ -45,8 +45,9 @@ namespace ingame.enemy {
             move_list_.Clear();
 
             foreach (var enemy in enemy_list_) {
-                if (CheckCanAttack(EnemyCommonSettings.left_down_) || CheckCanAttack(EnemyCommonSettings.front_) ||
-                    CheckCanAttack(EnemyCommonSettings.right_down_)) {
+                if (CheckCanAttack(enemy.transform, EnemyCommonSettings.left_down_) ||
+                    CheckCanAttack(enemy.transform, EnemyCommonSettings.front_) ||
+                    CheckCanAttack(enemy.transform, EnemyCommonSettings.right_down_)) {
                     attack_list_.Add(enemy);
                 } else {
                     move_list_.Add(enemy);
@@ -54,10 +55,9 @@ namespace ingame.enemy {
             }
         }
 
-        private bool CheckCanAttack(Vector2 ray_vec) {
-            Vector3 ray_start_pos = transform.position + new Vector3(ray_vec.x / 2, ray_vec.y / 2, 0);
+        private bool CheckCanAttack(Transform enemy, Vector2 ray_vec) {
+            Vector3 ray_start_pos = enemy.position + new Vector3(ray_vec.x / 2, ray_vec.y / 2, 0);
             var obj = Physics2D.Raycast(ray_start_pos, ray_vec, EnemyCommonSettings.ray_length_, EnemyCommonSettings.player_mask_);
-
             return obj.collider != null;
         }
 

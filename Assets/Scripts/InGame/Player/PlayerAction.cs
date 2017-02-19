@@ -32,7 +32,6 @@ namespace ingame.player {
                             .ThrottleFirst(System.TimeSpan.FromSeconds(action_speed_))
                             .Subscribe(dir => {
                                 Move(dir);
-                                Debug.LogError("Move");
                                 onNext(ingame.system.NextStep.EnemyMove);
                             });
 
@@ -41,7 +40,6 @@ namespace ingame.player {
                               .ThrottleFirst(System.TimeSpan.FromSeconds(action_speed_))
                               .Subscribe(dir => {
                                   Attack(dir);
-                                  Debug.LogError("Attack");
                                   onNext(ingame.system.NextStep.EnemyAct);
                               });
 
@@ -50,7 +48,6 @@ namespace ingame.player {
             pointer_event.OnPointerClickAsObservable()
                          .Where(_ => ingame.system.GameManager.Instance.TurnStep.Value == ingame.system.NextStep.Player)
                          .Subscribe(_ => {
-                             Debug.Log("None");
                              onNext(ingame.system.NextStep.EnemyAct);
                          });
         }
