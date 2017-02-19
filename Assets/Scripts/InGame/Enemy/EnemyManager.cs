@@ -16,12 +16,14 @@ namespace ingame.enemy {
             move_list_ = new List<EnemyAction>();
         }
 
-        private void Start() {
+        public void Action(System.Action onNext) {
             GameManager.Instance.TurnStep
                                 .Where(turn => turn == NextStep.EnemyMove)
                                 .Subscribe(_ => {
                                     AssortActionType();
                                     MovePriority();
+                                    Observable.Timer(System.TimeSpan.FromSeconds(EnemyCommonSettings.action_speed_))
+                                              .Subscribe(__ => onNext());
                                 })
                                 .AddTo(this);
 
@@ -30,6 +32,8 @@ namespace ingame.enemy {
                                 .Subscribe(_ => {
                                     AssortActionType();
                                     AttackPriority();
+                                    Observable.Timer(System.TimeSpan.FromSeconds(EnemyCommonSettings.action_speed_))
+                                              .Subscribe(__ => onNext());
                                 })
                                 .AddTo(this);
         }
