@@ -7,8 +7,6 @@ namespace ingame.enemy {
 
         private Transform target_;
         private int obstacle_mask_;
-        private const float ray_length_ = 0.3f;
-        private const float action_speed_ = 0.2f;
 
         private void Awake() {
             obstacle_mask_ = LayerMask.GetMask(new string[] { "Wall", "Enemy" });
@@ -25,13 +23,13 @@ namespace ingame.enemy {
                 case ActionDir.None:
                     return;
                 case ActionDir.Left:
-                    transform.DOMove(new Vector3(-0.5f, -0.5f), action_speed_).SetRelative();
+                    transform.DOMove(EnemyCommonSettings.left_down_, EnemyCommonSettings.action_speed_).SetRelative();
                     break;
                 case ActionDir.Front:
-                    transform.DOMove(new Vector3(0f, -0.5f), action_speed_).SetRelative();
+                    transform.DOMove(EnemyCommonSettings.front_, EnemyCommonSettings.action_speed_).SetRelative();
                     break;
                 case ActionDir.Right:
-                    transform.DOMove(new Vector3(0.5f, -0.5f), action_speed_).SetRelative();
+                    transform.DOMove(EnemyCommonSettings.right_down_, EnemyCommonSettings.action_speed_).SetRelative();
                     break;
             }
         }
@@ -80,15 +78,15 @@ namespace ingame.enemy {
 
             List<ActionDir> dirs = new List<ActionDir>();
 
-            if (CheckCanMove(new Vector2(-0.5f, -0.5f))) {
+            if (CheckCanMove(EnemyCommonSettings.left_down_)) {
                 dirs.Add(ActionDir.Left);
             }
 
-            if (CheckCanMove(new Vector2(0f, -0.5f))) {
+            if (CheckCanMove(EnemyCommonSettings.front_)) {
                 dirs.Add(ActionDir.Front);
             }
 
-            if (CheckCanMove(new Vector2(0.5f, -0.5f))) {
+            if (CheckCanMove(EnemyCommonSettings.right_down_)) {
                 dirs.Add(ActionDir.Right);
             }
 
@@ -98,17 +96,11 @@ namespace ingame.enemy {
         private bool CheckCanMove(Vector2 ray_vec) {
             Vector3 ray_start_pos = transform.position + new Vector3(ray_vec.x / 2, ray_vec.y / 2, 0);
 
-            var obj = Physics2D.Raycast(ray_start_pos, ray_vec, ray_length_, obstacle_mask_);
+            var obj = Physics2D.Raycast(ray_start_pos, ray_vec, EnemyCommonSettings.ray_length_, obstacle_mask_);
             return obj.collider == null || obj.collider.gameObject == transform.gameObject;
         }
 
 
     }
 
-    public enum ActionDir {
-        None,
-        Left,
-        Front,
-        Right
-    };
 }
