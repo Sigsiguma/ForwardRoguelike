@@ -22,11 +22,16 @@ namespace ingame.system {
         private void Start() {
             player_action_.Action((next_step) => turn_step_.Value = next_step);
             enemy_action_.Action(() => turn_step_.Value = NextStep.Player);
+
+            turn_step_.Where(step => step == NextStep.None)
+                      .Subscribe(_ => turn_step_.Dispose());
         }
 
     }
+
     //敵はプレイヤーの行動によって移動が先か行動が先か決まる
     public enum NextStep {
+        None,
         Player,
         EnemyMove,
         EnemyAct

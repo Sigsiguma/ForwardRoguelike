@@ -10,6 +10,7 @@ namespace ingame.camera {
 
         private void Start() {
             this.LateUpdateAsObservable()
+                .Where(_ => ingame.system.GameManager.Instance.TurnStep.Value != ingame.system.NextStep.None)
                 .Subscribe(_ => {
                     var pos = transform.position;
                     pos.y = target_.position.y + 1.0f;

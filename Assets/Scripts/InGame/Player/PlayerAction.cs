@@ -27,6 +27,7 @@ namespace ingame.player {
         public void Action(System.Action<ingame.system.NextStep> onNext) {
 
             var MoveAsObservable = ActionAsObservable().Where(dir => CheckCanMove(dir));
+
             var AttackAsObservable = ActionAsObservable().Where(dir => CheckCanAttack(dir));
 
             MoveAsObservable.Where(_ => ingame.system.GameManager.Instance.TurnStep.Value == ingame.system.NextStep.Player)
@@ -55,11 +56,16 @@ namespace ingame.player {
 
             PlayerAttackedAsObservable.Subscribe(_ => onNext(ingame.system.NextStep.EnemyAct))
                                       .AddTo(this);
+
+            this.OnTriggerEnter2DAsObservable()
+                .Where(obj => obj.tag == "GoalEntrance")
+                .Subscribe(_ => onNext(ingame.system.NextStep.None));
         }
 
         private IObservable<PlayerDir> ActionAsObservable() {
             return FlickVectorAsObservable().Where(vec => vec.magnitude > tap_flick_border_)
                                             .Select(flick_vec => AssortFlickDir(flick_vec))
+                                            .TakeWhile(_ => ingame.system.GameManager.Instance.TurnStep.Value != ingame.system.NextStep.None)
                                             .Do(dir => PlayerDir_.OnNext(dir));
         }
 

@@ -10,6 +10,9 @@ namespace ingame.stage {
         private GameObject[] tiled_prefab_;
 
         [SerializeField]
+        private GameObject goal_prefab_;
+
+        [SerializeField]
         private GameObject[] enemy_prefab_;
 
         [SerializeField]
@@ -25,10 +28,19 @@ namespace ingame.stage {
             tiled_list_ = new List<GameObject>();
         }
 
-        private void Start() {
+        public void StageCreate(float max_y) {
             StageInit();
             player_.PlayerMovedAsObservable
-                   .Subscribe(_ => StageUpdate());
+                   .Where(_ => player_.transform.position.y < max_y)
+                   .Subscribe(_ => StageUpdate())
+                   .AddTo(this);
+
+
+            player_.PlayerMovedAsObservable
+                   .Where(_ => Mathf.Approximately(player_.transform.position.y, max_y))
+                   .FirstOrDefault()
+                   .Subscribe(_ => CreateGoal())
+                   .AddTo(this);
         }
 
         private void StageInit() {
@@ -53,6 +65,11 @@ namespace ingame.stage {
                             , Quaternion.identity, transform));
 
             CreateEnemy(next_tile_pos);
+        }
+
+        private void CreateGoal() {
+            float next_tile_pos = tiled_list_[tiled_list_.Count - 1].transform.position.y + tile_size_;
+            Instantiate(goal_prefab_, new Vector3(0f, next_tile_pos, 0f), Quaternion.identity, transform);
         }
 
         private void CreateEnemy(float pos_y) {
