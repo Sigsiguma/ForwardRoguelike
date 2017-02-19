@@ -21,6 +21,7 @@ namespace ingame.player {
             enemy_mask_ = LayerMask.GetMask(new string[] { "Enemy" });
             PlayerDir_ = new Subject<PlayerDir>();
             PlayerMoved = new Subject<Unit>();
+            PlayerAttacked = new Subject<Unit>();
         }
 
         public void Action(System.Action<ingame.system.NextStep> onNext) {
@@ -32,16 +33,14 @@ namespace ingame.player {
                             .ThrottleFirst(System.TimeSpan.FromSeconds(action_speed_))
                             .Subscribe(dir => {
                                 Move(dir);
-                                onNext(ingame.system.NextStep.EnemyMove);
-                            });
+                            }).AddTo(this);
 
 
             AttackAsObservable.Where(_ => ingame.system.GameManager.Instance.TurnStep.Value == ingame.system.NextStep.Player)
                               .ThrottleFirst(System.TimeSpan.FromSeconds(action_speed_))
                               .Subscribe(dir => {
                                   Attack(dir);
-                                  onNext(ingame.system.NextStep.EnemyAct);
-                              });
+                              }).AddTo(this);
 
             var pointer_event = gameObject.AddComponent<ObservablePointerClickTrigger>();
 
@@ -49,7 +48,13 @@ namespace ingame.player {
                          .Where(_ => ingame.system.GameManager.Instance.TurnStep.Value == ingame.system.NextStep.Player)
                          .Subscribe(_ => {
                              onNext(ingame.system.NextStep.EnemyAct);
-                         });
+                         }).AddTo(this);
+
+            PlayerMovedAsObservable.Subscribe(_ => onNext(ingame.system.NextStep.EnemyMove))
+                                   .AddTo(this);
+
+            PlayerAttackedAsObservable.Subscribe(_ => onNext(ingame.system.NextStep.EnemyAct))
+                                      .AddTo(this);
         }
 
         private IObservable<PlayerDir> ActionAsObservable() {

@@ -43,7 +43,6 @@ namespace ingame.stage {
             }
         }
 
-        //移動するタイミングで一番したを消して、ってやれば良さそう?
         private void StageUpdate() {
 
             Destroy(tiled_list_[0]);

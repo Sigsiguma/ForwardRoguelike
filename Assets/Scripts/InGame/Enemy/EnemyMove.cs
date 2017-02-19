@@ -14,9 +14,6 @@ namespace ingame.enemy {
 
         private void Awake() {
             Dir_ = new Subject<ActionDir>();
-        }
-
-        private void Start() {
             target_ = GameObject.FindWithTag("Player").transform;
         }
 
