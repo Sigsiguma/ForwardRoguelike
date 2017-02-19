@@ -42,15 +42,15 @@ namespace ingame.enemy {
 
         private ActionDir DecideAttackDir() {
 
-            if (CheckCanAttack(new Vector2(-0.5f, -0.5f))) {
+            if (CheckCanAttack(EnemyCommonSettings.left_down_)) {
                 return ActionDir.Left;
             }
 
-            if (CheckCanAttack(new Vector2(0f, -0.5f))) {
+            if (CheckCanAttack(EnemyCommonSettings.front_)) {
                 return ActionDir.Front;
             }
 
-            if (CheckCanAttack(new Vector2(0.5f, -0.5f))) {
+            if (CheckCanAttack(EnemyCommonSettings.right_down_)) {
                 return ActionDir.Right;
             }
 
