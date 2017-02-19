@@ -14,7 +14,7 @@ namespace ingame.stage {
 
         private StageCreater creater_;
 
-        private float goal_y_ = 50f;
+        private float goal_y_ = 5f;
 
         private void Awake() {
             creater_ = GetComponent<StageCreater>();
