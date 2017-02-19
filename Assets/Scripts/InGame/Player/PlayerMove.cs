@@ -33,15 +33,18 @@ namespace ingame.player {
 
             switch (dir) {
                 case PlayerDir.Left:
-                    transform.DOMove(transform.position + new Vector3(-0.5f, 0.5f, 0f), action_speed_)
+                    transform.DOMove(new Vector3(-0.5f, 0.5f, 0f), action_speed_)
+                             .SetRelative()
                              .OnComplete(() => PlayerMoved.OnNext(Unit.Default));
                     break;
                 case PlayerDir.Front:
-                    transform.DOMove(transform.position + new Vector3(0f, 0.5f, 0f), action_speed_)
+                    transform.DOMove(new Vector3(0f, 0.5f, 0f), action_speed_)
+                             .SetRelative()
                              .OnComplete(() => PlayerMoved.OnNext(Unit.Default));
                     break;
                 case PlayerDir.Right:
-                    transform.DOMove(transform.position + new Vector3(0.5f, 0.5f, 0f), action_speed_)
+                    transform.DOMove(new Vector3(0.5f, 0.5f, 0f), action_speed_)
+                             .SetRelative()
                              .OnComplete(() => PlayerMoved.OnNext(Unit.Default));
                     break;
             }
