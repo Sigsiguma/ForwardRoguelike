@@ -7,7 +7,7 @@ using UniRx.Triggers;
 namespace ingame.stage.events {
     public class Stage1GoalEvent : MonoBehaviour {
 
-        private const float walk_time_ = 3.0f;
+        private const float walk_time_ = 2.0f;
         private const string goal_tag_name_ = "Goal";
         private GameObject player_;
         private Vector3 goal_pos_;
